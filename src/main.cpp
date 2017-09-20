@@ -170,7 +170,7 @@ int main()
     ws.close();
     std::cout << "Disconnected" << std::endl;
   });
-
+  std::cout << "I am here!" << std::endl;
   int port = 4567;
   if (h.listen(port))
   {

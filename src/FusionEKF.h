@@ -35,6 +35,8 @@ private:
   // check whether the tracking toolbox was initialized or not (first measurement)
   bool is_initialized_;
 
+  float noise_ax = 9;
+  float noise_ay = 9;
   // previous timestamp
   long long previous_timestamp_;
 
@@ -44,6 +46,7 @@ private:
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
   Eigen::MatrixXd Hj_;
+  Eigen::MatrixXd P_;
 };
 
 #endif /* FusionEKF_H_ */
