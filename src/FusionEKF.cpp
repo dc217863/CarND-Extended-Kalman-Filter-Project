@@ -53,7 +53,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     /*****************************************************************************
      *  Initialization
      ****************************************************************************/
-    cout << "starting proc meas" << endl;
     if (!is_initialized_) {
         /**
         TODO:
@@ -75,7 +74,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             /**
             Convert radar from polar to Cartesian coordinates and initialize state.
             */
-            cout << "Radar init!" << endl;
             ekf_.x_(0) = measurement_pack.raw_measurements_(0) * cos(measurement_pack.raw_measurements_(1));
             ekf_.x_(1) = measurement_pack.raw_measurements_(0) * sin(measurement_pack.raw_measurements_(1));
             ekf_.x_(2) = measurement_pack.raw_measurements_(2) * cos(measurement_pack.raw_measurements_(1));
@@ -83,7 +81,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
             Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
             cout << measurement_pack.raw_measurements_.format(CleanFmt);
-            cout << "Radar init over!" << endl;
         }
         else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
             /**
@@ -93,7 +90,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
             ekf_.x_(1) = measurement_pack.raw_measurements_(1);
             ekf_.x_(2) = 0;
             ekf_.x_(3) = 0;
-            cout << "Laser init over!" << endl;
         }
 
         previous_timestamp_ = measurement_pack.timestamp_;
@@ -120,8 +116,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     // F_ remains the same for Radar and Lidar as we are using a linear model for the prediction step
     ekf_.F_ = MatrixXd(4,4);
-    ekf_.F_(0, 2) = dt;
-    ekf_.F_(0, 3) = dt;
+    ekf_.F_ << 1, 0, dt, 0,
+              0, 1, 0, dt,
+              0, 0, 1, 0,
+              0, 0, 0, 1;
 
     float dt_2 = dt * dt;
     float dt_3 = dt_2 * dt;

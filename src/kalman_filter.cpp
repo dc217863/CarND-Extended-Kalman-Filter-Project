@@ -31,7 +31,7 @@ void KalmanFilter::Predict() {
 void KalmanFilter::Update(const VectorXd &z) {
     /**
     TODO:
-      * update the state by using Kalman Filter equations
+      * update the state by using Kalman Filter equations (LASER)
     */
     VectorXd z_pred = H_ * x_;
     VectorXd y = z - z_pred;
@@ -42,17 +42,29 @@ void KalmanFilter::Update(const VectorXd &z) {
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
     /**
     TODO:
-      * update the state by using Extended Kalman Filter equations
+      * update the state by using Extended Kalman Filter equations (RADAR)
     */
     // y = z_radar - h(x') where function h converts x' into polar coordinates
     double rho = sqrt(x_(0) * x_(0) + x_(1) * x_(1));
-    double phi = atan(x_(1) / x_(0));
+    double phi = atan2(x_(1), x_(0));
+    if (rho < 0.000001) {
+        rho = 0.000001;
+    }
     double rho_dot = (x_(0) * x_(2) + x_(1) * x_(3)) / rho;
 
     VectorXd z_pred = VectorXd(3);
     z_pred << rho, phi, rho_dot;
 
     VectorXd y = z - z_pred;
+
+    // normalizing angle between -pi and pi
+    if (y(1) > M_PI) {
+        y(1) -= 2*M_PI;
+    }
+
+    if (y(1) < -M_PI) {
+        y(1) += 2*M_PI;
+    }
 
     UpdateCommon(y);
 }
@@ -63,4 +75,10 @@ void KalmanFilter::UpdateCommon(const VectorXd &y) {
     MatrixXd Si = S.inverse();
     MatrixXd PHt = P_ * Ht;
     MatrixXd K = PHt * Si;
+
+    // New state
+    x_ = x_ + K * y;
+    int x_size = x_.size();
+    MatrixXd I = MatrixXd::Identity(x_size, x_size);
+    P_ = (I - K * H_) * P_;
 }
