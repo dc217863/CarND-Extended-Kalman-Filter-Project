@@ -1,13 +1,13 @@
 #ifndef FusionEKF_H_
 #define FusionEKF_H_
 
-#include "measurement_package.h"
 #include "Eigen/Dense"
-#include <vector>
-#include <string>
-#include <fstream>
 #include "kalman_filter.h"
+#include "measurement_package.h"
 #include "tools.h"
+#include <fstream>
+#include <string>
+#include <vector>
 
 class FusionEKF {
 public:
@@ -32,7 +32,8 @@ public:
   KalmanFilter ekf_;
 
 private:
-  // check whether the tracking toolbox was initialized or not (first measurement)
+  // check whether the tracking toolbox was initialized or not (first
+  // measurement)
   bool is_initialized_;
 
   float noise_ax = 9;
