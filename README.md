@@ -41,9 +41,9 @@ The code consists of the following files:
 
 ![][image3]
 
-The extended Kalman filter is almost the same as a basic Kalman filter except the H, and F are different. However, in this case, since I‘m assuming a constant velocity model which is linear, the F is the same.
-
 ## Compare EKF and KF
+
+The extended Kalman filter is almost the same as a basic Kalman filter except the H, and F are different. However, in this case, since I‘m assuming a constant velocity model which is linear, the F is the same.
 
 ![][image4]
 
